@@ -10,6 +10,7 @@
     <thead>
     <tr>
         <th>ID</th>
+        <th>logo</th>
         <th>Nome</th>
         <th>Cidade</th>
         <th>Status</th>
@@ -23,6 +24,10 @@
 
         <tr>
             <td><?= $v['id'] ?></td>
+
+            <td>
+                <img src="/uploads/<?= $v['logo'] ?>" width="80">
+            </td>
 
             <td><?= $v['nome'] ?></td>
 

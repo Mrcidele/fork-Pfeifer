@@ -7,7 +7,6 @@ use App\Models\Task;
 /** @var Task $task */
 /** @var list<string> $errors */
 /** @var array{title: string, description: string, is_done: bool} $old */
-
 ?>
 
 <h1>Editar task #<?= (int) $task->id ?></h1>
@@ -32,8 +31,7 @@ use App\Models\Task;
             name="title"
             value="<?= htmlspecialchars($old['title'] ?? '', ENT_QUOTES, 'UTF-8') ?>"
             required
-            maxlength="255"
-        >
+            maxlength="255">
     </div>
 
     <div>

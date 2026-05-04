@@ -46,7 +46,6 @@ CREATE TABLE historico_viacoes (
 );
 
 SELECT * FROM viacoes;
-
 SELECT * FROM historico_viacoes;
 
 INSERT INTO viacoes (nome, url, cidade, status, logo)

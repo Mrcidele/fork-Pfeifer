@@ -1,6 +1,6 @@
 <h1>Editar Viação</h1>
 
-<form method="POST" action="/viacoes/update">
+<form method="POST" action="/viacoes/update" enctype="multipart/form-data">
 
     <input
             type="hidden"
@@ -32,13 +32,13 @@
             placeholder="Cidade"
     >
 
-    <label>Logo</label>
-    <input
-            type="text"
-            name="logo"
-            value="<?= $viacao['logo'] ?>"
-            placeholder="logo.png"
-    >
+    <label>Logo atual</label><br>
+
+    <img src="/uploads/<?= $viacao['logo'] ?>" width="100">
+
+    <br><br>
+
+    <input type="file" name="logo">
 
     <label>Status</label>
     <select name="status">

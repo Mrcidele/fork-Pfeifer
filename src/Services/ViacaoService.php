@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Services;
-
 use PDO;
 
 final class ViacaoService
@@ -10,7 +9,6 @@ final class ViacaoService
 
     public function __construct()
     {
-        // CORRETO:
         $this->pdo = getPdo();
     }
 
@@ -23,6 +21,7 @@ final class ViacaoService
 
     public function create(array $data): void
     {
+
         $sql = "INSERT INTO viacoes
                 (nome, url, cidade, status, logo)
                 VALUES (?, ?, ?, ?, ?)";
@@ -34,8 +33,9 @@ final class ViacaoService
             $data['url'],
             $data['cidade'],
             $data['status'],
-            $data['logo']
+            $data['logo'] ?? null
         ]);
+
 
         $id = (int) $this->pdo->lastInsertId();
 
@@ -68,13 +68,17 @@ final class ViacaoService
 
     public function update(int $id, array $data): void
     {
+        $viacaoAtual = $this->find($id);
+
+        $logo = $data['logo'] ?? $viacaoAtual['logo'];
+
         $sql = "UPDATE viacoes SET
-                    nome = ?,
-                    url = ?,
-                    cidade = ?,
-                    status = ?,
-                    logo = ?
-                WHERE id = ?";
+                nome = ?,
+                url = ?,
+                cidade = ?,
+                status = ?,
+                logo = ?
+            WHERE id = ?";
 
         $stmt = $this->pdo->prepare($sql);
 
@@ -83,7 +87,7 @@ final class ViacaoService
             $data['url'],
             $data['cidade'],
             $data['status'],
-            $data['logo'],
+            $logo,
             $id
         ]);
 
@@ -91,6 +95,7 @@ final class ViacaoService
 
         $this->historico($id, $dadosAtualizados, 'editado');
     }
+
 
     private function historico(
         int $id,

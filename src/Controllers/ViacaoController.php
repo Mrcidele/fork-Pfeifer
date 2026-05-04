@@ -30,13 +30,34 @@ final class ViacaoController
             'title' => 'Nova Viação'
         ]);
     }
-
     public function store(): void
     {
-        $this->service->create($_POST);
+        $data = $_POST;
+
+        if (!empty($_FILES['logo']['name'])) {
+
+            $file = $_FILES['logo'];
+
+            $nomeArquivo = uniqid() . '_' . $file['name'];
+
+            $uploadPath = dirname(__DIR__, 2) . '/src/public/uploads/';
+
+            move_uploaded_file(
+                $file['tmp_name'],
+                $uploadPath . $nomeArquivo
+            );
+
+            $data['logo'] = $nomeArquivo;
+        }
+
+        $this->service->create($data);
 
         header('Location: /viacoes');
+        exit;
     }
+
+
+
     public function destroy(): void
     {
         $id = (int) $_GET['id'];
@@ -62,8 +83,25 @@ final class ViacaoController
     public function update(): void
     {
         $id = (int) $_POST['id'];
+        $data = $_POST;
 
-        $this->service->update($id, $_POST);
+        if (!empty($_FILES['logo']['name'])) {
+
+            $file = $_FILES['logo'];
+
+            $nomeArquivo = uniqid() . '_' . $file['name'];
+
+            $uploadPath = dirname(__DIR__, 2) . '/src/public/uploads/';
+
+            move_uploaded_file(
+                $file['tmp_name'],
+                $uploadPath . $nomeArquivo
+            );
+
+            $data['logo'] = $nomeArquivo;
+        }
+
+        $this->service->update($id, $data);
 
         header('Location: /viacoes');
         exit;
