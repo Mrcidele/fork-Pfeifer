@@ -93,6 +93,7 @@ final class ViacaoController
 
             $uploadPath = dirname(__DIR__, 2) . '/src/public/uploads/';
 
+
             move_uploaded_file(
                 $file['tmp_name'],
                 $uploadPath . $nomeArquivo
@@ -105,6 +106,16 @@ final class ViacaoController
 
         header('Location: /viacoes');
         exit;
+    }
+
+    public function historico(): void
+    {
+        $historico = $this->service->historicoAll();
+
+        View::render('viacoes/historico', [
+            'title' => 'Histórico de Viações',
+            'historico' => $historico
+        ]);
     }
 
 }

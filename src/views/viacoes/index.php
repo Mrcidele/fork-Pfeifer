@@ -4,6 +4,7 @@
     <a href="/viacoes/create" class="btn btn-success">
         Nova Viação
     </a>
+    <a href="/viacoes/historico" class="btn btn-success">Ver Histórico</a>
 </p>
 
 <table>

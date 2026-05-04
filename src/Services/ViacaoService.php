@@ -126,4 +126,16 @@ final class ViacaoService
             $acao
         ]);
     }
+
+    public function historicoAll(): array
+    {
+        return $this->pdo
+            ->query("
+            SELECT *
+            FROM historico_viacoes
+            ORDER BY id DESC
+        ")
+            ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 }
