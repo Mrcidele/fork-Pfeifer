@@ -6,8 +6,8 @@
   --bg: #ffffff;
   --bg-page: #f9fafb;
 
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
+  --primary: #2764c0;
+  --primary-hover: #1f2c64;
 
   --danger: #dc2626;
   --danger-hover: #b91c1c;
@@ -119,6 +119,14 @@ button[type="submit"]:hover {
 
 .btn-success:hover {
   background: var(--success-hover);
+}
+
+.btn-editado{
+  color: var(--primary);
+}
+
+.btn-status{
+  color: var(--success);
 }
 
 form {

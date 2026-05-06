@@ -1,141 +1,77 @@
 <?php
 
 namespace App\Services;
-use PDO;
+
+use App\Repository\ViacaoRepository;
+use App\Repository\ViacaoHistoricoRepository;
+use App\Validators\ViacaoValidator;
 
 final class ViacaoService
 {
-    private PDO $pdo;
+    private ViacaoRepository $repo;
+    private ViacaoHistoricoRepository $historicoRepo;
 
     public function __construct()
     {
-        $this->pdo = getPdo();
+        $pdo = getPdo();
+
+        $this->repo = new ViacaoRepository($pdo);
+        $this->historicoRepo = new ViacaoHistoricoRepository($pdo);
     }
 
     public function all(): array
     {
-        return $this->pdo
-            ->query("SELECT * FROM viacoes ORDER BY id DESC")
-            ->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function create(array $data): void
-    {
-
-        $sql = "INSERT INTO viacoes
-                (nome, url, cidade, status, logo)
-                VALUES (?, ?, ?, ?, ?)";
-
-        $stmt = $this->pdo->prepare($sql);
-
-        $stmt->execute([
-            $data['nome'],
-            $data['url'],
-            $data['cidade'],
-            $data['status'],
-            $data['logo'] ?? null
-        ]);
-
-
-        $id = (int) $this->pdo->lastInsertId();
-
-        $this->historico($id, $data, 'criado');
-    }
-
-    public function delete(int $id): void
-    {
-        $viacao = $this->find($id);
-
-        $this->historico($id, $viacao, 'excluido');
-
-        $stmt = $this->pdo->prepare(
-            "DELETE FROM viacoes WHERE id = ?"
-        );
-
-        $stmt->execute([$id]);
+        return $this->repo->all();
     }
 
     public function find(int $id): array
     {
-        $stmt = $this->pdo->prepare(
-            "SELECT * FROM viacoes WHERE id = ?"
-        );
+        return $this->repo->find($id);
+    }
 
-        $stmt->execute([$id]);
+    public function create(array $data): void
+    {
+        ViacaoValidator::validate($data);
 
-        return $stmt->fetch(PDO::FETCH_ASSOC) ?: [];
+        $id = $this->repo->create($data);
+
+        $this->historicoRepo->create($id, $data, 'criado');
     }
 
     public function update(int $id, array $data): void
     {
-        $viacaoAtual = $this->find($id);
+        ViacaoValidator::validate($data);
 
-        $logo = $data['logo'] ?? $viacaoAtual['logo'];
+        $viacaoAtual = $this->repo->find($id);
 
-        $sql = "UPDATE viacoes SET
-                nome = ?,
-                url = ?,
-                cidade = ?,
-                status = ?,
-                logo = ?
-            WHERE id = ?";
+        if (!$viacaoAtual) {
+            throw new \Exception('Viação não encontrada');
+        }
 
-        $stmt = $this->pdo->prepare($sql);
+        $data['logo'] = $data['logo'] ?? $viacaoAtual['logo'];
 
-        $stmt->execute([
-            $data['nome'],
-            $data['url'],
-            $data['cidade'],
-            $data['status'],
-            $logo,
-            $id
-        ]);
+        $this->repo->update($id, $data);
 
-        $dadosAtualizados = $this->find($id);
+        $dadosAtualizados = $this->repo->find($id);
 
-        $this->historico($id, $dadosAtualizados, 'editado');
+        $this->historicoRepo->create($id, $dadosAtualizados, 'editado');
     }
 
+    public function delete(int $id): void
+    {
+        $viacao = $this->repo->find($id);
 
-    private function historico(
-        int $id,
-        array $dados,
-        string $acao
-    ): void {
-        $sql = "INSERT INTO historico_viacoes
-                (
-                    viacao_id,
-                    nome,
-                    url,
-                    cidade,
-                    status,
-                    logo,
-                    acao
-                )
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
+        if (!$viacao) {
+            throw new \Exception('Viação não encontrada');
+        }
 
-        $stmt = $this->pdo->prepare($sql);
+        $this->historicoRepo->create($id, $viacao, 'excluido');
 
-        $stmt->execute([
-            $id,
-            $dados['nome'] ?? '',
-            $dados['url'] ?? '',
-            $dados['cidade'] ?? '',
-            $dados['status'] ?? 'inativo',
-            $dados['logo'] ?? '',
-            $acao
-        ]);
+        $this->repo->delete($id);
     }
 
     public function historicoAll(): array
     {
-        return $this->pdo
-            ->query("
-            SELECT *
-            FROM historico_viacoes
-            ORDER BY id DESC
-        ")
-            ->fetchAll(PDO::FETCH_ASSOC);
+        return $this->historicoRepo->all();
     }
-
 }

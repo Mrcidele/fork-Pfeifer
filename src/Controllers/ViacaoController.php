@@ -4,14 +4,17 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Services\ViacaoService;
+use App\Services\UploadService;
 
 final class ViacaoController
 {
     private ViacaoService $service;
+    private UploadService $upload;
 
     public function __construct()
     {
         $this->service = new ViacaoService();
+        $this->upload = new UploadService();
     }
 
     public function index(): void
@@ -30,33 +33,47 @@ final class ViacaoController
             'title' => 'Nova Viação'
         ]);
     }
+
     public function store(): void
     {
-        $data = $_POST;
-
-        if (!empty($_FILES['logo']['name'])) {
-
-            $file = $_FILES['logo'];
-
-            $nomeArquivo = uniqid() . '_' . $file['name'];
-
-            $uploadPath = dirname(__DIR__, 2) . '/src/public/uploads/';
-
-            move_uploaded_file(
-                $file['tmp_name'],
-                $uploadPath . $nomeArquivo
-            );
-
-            $data['logo'] = $nomeArquivo;
-        }
-
-        $this->service->create($data);
-
-        header('Location: /viacoes');
-        exit;
+        $this->save();
     }
 
+    public function update(): void
+    {
+        $this->save(true);
+    }
 
+    private function save(bool $isUpdate = false): void
+    {
+        try {
+
+            $data = $_POST;
+
+            $logo = null;
+
+            if (isset($_FILES['logo'])) {
+                $logo = $this->upload->upload($_FILES['logo']);
+            }
+
+            if ($logo) {
+                $data['logo'] = $logo;
+            }
+
+            if ($isUpdate) {
+                $id = (int) $_POST['id'];
+                $this->service->update($id, $data);
+            } else {
+                $this->service->create($data);
+            }
+
+            header('Location: /viacoes');
+            exit;
+
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
 
     public function destroy(): void
     {
@@ -80,34 +97,6 @@ final class ViacaoController
         ]);
     }
 
-    public function update(): void
-    {
-        $id = (int) $_POST['id'];
-        $data = $_POST;
-
-        if (!empty($_FILES['logo']['name'])) {
-
-            $file = $_FILES['logo'];
-
-            $nomeArquivo = uniqid() . '_' . $file['name'];
-
-            $uploadPath = dirname(__DIR__, 2) . '/src/public/uploads/';
-
-
-            move_uploaded_file(
-                $file['tmp_name'],
-                $uploadPath . $nomeArquivo
-            );
-
-            $data['logo'] = $nomeArquivo;
-        }
-
-        $this->service->update($id, $data);
-
-        header('Location: /viacoes');
-        exit;
-    }
-
     public function historico(): void
     {
         $historico = $this->service->historicoAll();
@@ -117,5 +106,4 @@ final class ViacaoController
             'historico' => $historico
         ]);
     }
-
 }

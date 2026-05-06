@@ -1,6 +1,6 @@
 <h1>Histórico de Viações</h1>
 
-<a href="/viacoes" class="btn btn-success">← Voltar</a>
+<a href="/viacoes" class="btn btn-success"><-- Voltar</a>
 <br>
 <br>
 <table>
@@ -32,7 +32,7 @@
             <td><?= $h['cidade'] ?></td>
 
             <td>
-                <span class="small">
+                <span class="btn-status">
                     <?= $h['status'] ?>
                 </span>
             </td>
@@ -42,7 +42,7 @@
                     <span class="success">Criado</span>
 
                 <?php elseif ($h['acao'] === 'editado'): ?>
-                    <span>Editado</span>
+                    <span class="btn-editado" >Editado</span>
 
                 <?php else: ?>
                     <span class="alert--danger">Excluído</span>
