@@ -21,5 +21,9 @@ final class ViacaoValidator
         if (!empty($data['url']) && !filter_var($data['url'], FILTER_VALIDATE_URL)) {
             throw new \Exception('URL inválida');
         }
+
+        if (strlen($data['nome']) < 4 ){
+            throw new \Exception('Deve possuir mais de 4 caracteres');
+        }
     }
 }
