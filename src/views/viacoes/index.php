@@ -34,7 +34,9 @@
 
             <td><?= $v['cidade'] ?></td>
 
-            <td><?= $v['status'] ?></td>
+            <td>
+                <?= $v['status'] == '0' ? 'Ativo' : 'Inativo' ?>
+            </td>
 
             <td>
                 <div class="actions">

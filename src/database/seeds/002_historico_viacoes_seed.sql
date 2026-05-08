@@ -1,61 +1,36 @@
 INSERT INTO historico_viacoes
 (
     viacao_id,
-    nome,
-    url,
-    cidade,
-    status,
-    logo,
+    usuario_id,
     acao
 )
 VALUES
-
     (
         1,
-        'Viação Cometa',
-        'https://www.viacaocometa.com.br',
-        'São Paulo',
-        'ativo',
-        'cometa.png',
+        1,
         'criado'
     ),
 
     (
         2,
-        'Expresso do Sul',
-        'https://www.expressodosul.com.br',
-        'Curitiba',
-        'ativo',
-        'expresso.png',
+        2,
         'criado'
     ),
 
     (
         3,
-        'Rápido Nordeste',
-        'https://www.rapidonordeste.com.br',
-        'Recife',
-        'ativo',
-        'nordeste.png',
+        3,
         'criado'
     ),
 
     (
         4,
-        'Viação Interior',
-        'https://www.viacaointerior.com.br',
-        'Campinas',
-        'inativo',
-        'interior.png',
+        4,
         'criado'
     ),
 
     (
         5,
-        'TransBrasil',
-        'https://www.transbrasil.com.br',
-        'Rio de Janeiro',
-        'ativo',
-        'transbrasil.png',
+        5,
         'criado'
     );

@@ -6,10 +6,9 @@
 <table>
     <thead>
     <tr>
-        <th>ID</th>
         <th>Viação</th>
-        <th>Cidade</th>
-        <th>Status</th>
+        <th>Usuário</th>
+        <th>Alteração</th>
         <th>Ação</th>
         <th>Data</th>
     </tr>
@@ -23,19 +22,10 @@
             <td><?= $h['viacao_id'] ?></td>
 
             <td>
-                <?= $h['nome'] ?>
-                <div class="small muted">
-                    (Atual: <?= $h['nome_atual'] ?? 'Removida' ?>)
-                </div>
+                <?= $h['usuario_nome'] ?>
             </td>
 
-            <td><?= $h['cidade'] ?></td>
-
-            <td>
-                <span class="btn-status">
-                    <?= $h['status'] ?>
-                </span>
-            </td>
+            <td><?= $h['alteracao'] ?></td>
 
             <td>
                 <?php if ($h['acao'] === 'criado'): ?>

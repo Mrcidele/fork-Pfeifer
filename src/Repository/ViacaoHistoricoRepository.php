@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Repository;
+
 use PDO;
 
 final class ViacaoHistoricoRepository
@@ -12,29 +13,48 @@ final class ViacaoHistoricoRepository
         $this->pdo = $pdo;
     }
 
-    public function create(int $id, array $dados, string $acao): void
-    {
+    public function create(
+        int $viacaoId,
+        int $usuarioId,
+        string $alteracao,
+        string $acao
+    ): void {
+
         $stmt = $this->pdo->prepare("
             INSERT INTO historico_viacoes
-            (viacao_id, nome, url, cidade, status, logo, acao)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (
+                viacao_id,
+                usuario_id,
+                alteracao,
+                acao
+            )
+            VALUES (?, ?, ?, ?)
         ");
 
         $stmt->execute([
-            $id,
-            $dados['nome'] ?? '',
-            $dados['url'] ?? '',
-            $dados['cidade'] ?? '',
-            $dados['status'] ?? 'inativo',
-            $dados['logo'] ?? '',
+            $viacaoId,
+            $usuarioId,
+            $alteracao,
             $acao
         ]);
     }
 
     public function all(): array
     {
+        $sql = "
+        SELECT
+            h.*,
+            u.nome AS usuario_nome
+        FROM historico_viacoes h
+
+        LEFT JOIN usuarios u
+            ON u.id = h.usuario_id
+
+        ORDER BY h.id DESC
+    ";
+
         return $this->pdo
-            ->query("SELECT * FROM historico_viacoes ORDER BY id DESC")
+            ->query($sql)
             ->fetchAll(PDO::FETCH_ASSOC);
     }
 }

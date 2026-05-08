@@ -6,7 +6,7 @@ VALUES
         'Viação Cometa',
         'https://www.viacaocometa.com.br',
         'São Paulo',
-        'ativo',
+        '0',
         'cometa.png'
     ),
 
@@ -14,7 +14,7 @@ VALUES
         'Expresso do Sul',
         'https://www.expressodosul.com.br',
         'Curitiba',
-        'ativo',
+        '0',
         'expresso.png'
     ),
 
@@ -22,7 +22,7 @@ VALUES
         'Rápido Nordeste',
         'https://www.rapidonordeste.com.br',
         'Recife',
-        'ativo',
+        '0',
         'nordeste.png'
     ),
 
@@ -30,7 +30,7 @@ VALUES
         'Viação Interior',
         'https://www.viacaointerior.com.br',
         'Campinas',
-        'inativo',
+        '1',
         'interior.png'
     ),
 
@@ -38,6 +38,6 @@ VALUES
         'TransBrasil',
         'https://www.transbrasil.com.br',
         'Rio de Janeiro',
-        'ativo',
+        '0',
         'transbrasil.png'
     );

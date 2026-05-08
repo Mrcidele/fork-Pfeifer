@@ -35,7 +35,12 @@ final class ViacaoService
 
         $id = $this->repo->create($data);
 
-        $this->historicoRepo->create($id, $data, 'criado');
+        $this->historicoRepo->create(
+            $id,
+            1,
+            'Viação criada',
+            'criado'
+        );
     }
 
     public function update(int $id, array $data): void
@@ -52,9 +57,12 @@ final class ViacaoService
 
         $this->repo->update($id, $data);
 
-        $dadosAtualizados = $this->repo->find($id);
-
-        $this->historicoRepo->create($id, $dadosAtualizados, 'editado');
+        $this->historicoRepo->create(
+            $id,
+            1,
+            'Viação editada',
+            'editado'
+        );
     }
 
     public function delete(int $id): void
@@ -65,7 +73,12 @@ final class ViacaoService
             throw new \Exception('Viação não encontrada');
         }
 
-        $this->historicoRepo->create($id, $viacao, 'excluido');
+        $this->historicoRepo->create(
+            $id,
+            1,
+            'Viação excluída',
+            'excluido'
+        );
 
         $this->repo->delete($id);
     }

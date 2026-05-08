@@ -44,15 +44,15 @@
     <select name="status">
 
         <option
-                value="ativo"
-                <?= $viacao['status'] == 'ativo' ? 'selected' : '' ?>
+                value="0"
+                <?= $viacao['status'] == '0' ? 'selected' : '' ?>
         >
             Ativo
         </option>
 
         <option
-                value="inativo"
-                <?= $viacao['status'] == 'inativo' ? 'selected' : '' ?>
+                value="1"
+                <?= $viacao['status'] == '1' ? 'selected' : '' ?>
         >
             Inativo
         </option>

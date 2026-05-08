@@ -32,11 +32,11 @@
     <label>Status</label>
     <select name="status">
 
-        <option value="ativo">
+        <option value="0">
             Ativo
         </option>
 
-        <option value="inativo">
+        <option value="1">
             Inativo
         </option>
 
