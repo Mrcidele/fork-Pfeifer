@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Quero Passagem</title>
-    <link rel="stylesheet" href="/Css/Home.css">
+    <link rel="stylesheet" href="/home.css">
 </head>
 <body>
 
@@ -21,7 +21,7 @@
 </nav>
 
 <div>
-    <img src="../Images/Captura%20de%20tela%20de%202026-04-08%2008-40-51.png" class="imagemprincipal">
+    <img src="/Images/Captura%20de%20tela%20de%202026-04-08%2008-40-51.png" class="imagemprincipal">
 </div>
 
 <!--form-->
@@ -80,7 +80,7 @@
 
 <section class="lado-a-lado-card">
     <div class="card">
-        <img class="imagem-cards" src="../Images/1a.jpg" alt="Avatar" style="width:100%">
+        <img class="imagem-cards" src="/Images/1a.jpg" alt="Avatar" style="width:100%">
         <div class="container">
             <h4><b>São paulo</b></h4>
             <p>Partindo de</p>
@@ -90,7 +90,7 @@
     </div>
 
     <div class="card">
-        <img class="imagem-cards" src="../Images/10.28GOIANIAGERAL_PJ-1-1024x569.jpeg" alt="Avatar" style="width:100%">
+        <img class="imagem-cards" src="/Images/10.28GOIANIAGERAL_PJ-1-1024x569.jpeg" alt="Avatar" style="width:100%">
         <div class="container">
             <h4><b>Goiânia</b></h4>
             <p>Partindo de</p>
@@ -100,7 +100,7 @@
     </div>
 
     <div class="card">
-        <img class="imagem-cards" src="../Images/57a.jpg" alt="Avatar" style="width:100%">
+        <img class="imagem-cards" src="/Images/57a.jpg" alt="Avatar" style="width:100%">
         <div class="container">
             <h4><b>Rio de janeiro</b></h4>
             <p>Partindo de</p>
@@ -110,7 +110,7 @@
     </div>
 
     <div class="card">
-        <img class="imagem-cards" src="../Images/55a.jpg" alt="Avatar" style="width:100%">
+        <img class="imagem-cards" src="/Images/55a.jpg" alt="Avatar" style="width:100%">
         <div class="container">
             <h4><b>Curitiba</b></h4>
             <p>Partindo de</p>
@@ -126,13 +126,13 @@
 <br>
 
 <!--seja um parceiro-->
-<img src="../Images/banner_download_app_2.png" style="width: 100%">
+<img src="/Images/banner_download_app_2.png" style="width: 100%">
 
 <section class="back-seja-um-parceiro">
 
     <div class="seja-um-parceiro-lado-a-lado">
 
-        <img src="../Images/parceiro.png" width="600px" class="imagem-responsiva">
+        <img src="/Images/parceiro.png" width="600px" class="imagem-responsiva">
         <div class="colunas-paragrafos-e-botao">
             <h4>Agências de Viagem</h4>
             <p>Sistema completo de emissão e venda de passagens <br>rodoviárias para agências de viagens.</p>
@@ -284,28 +284,28 @@
 
 <section class="lado-a-lado-inf">
     <div class="card-inf">
-        <img class="imagem-cards" src="../Images/card_pagamento.png" alt="Avatar" style="width:100%">
+        <img class="imagem-cards" src="/Images/card_pagamento.png" alt="Avatar" style="width:100%">
         <div class="container">
             <p>Escolha a melhor forma de pagamento para você: compre sua passagem de ônibus em até 12x no cartão de crédito ou pague com débito, transferência bancária, boleto ou via Pix.</p>
         </div>
     </div>
 
     <div class="card-inf">
-        <img class="imagem-cards" src="../Images/card_onibus.png" alt="Avatar" style="width:100%">
+        <img class="imagem-cards" src="/Images/card_onibus.png" alt="Avatar" style="width:100%">
         <div class="container">
             <p class="paragrafo-card-viajar">Viaje com conforto e segurança nas melhores companhias de ônibus do Brasil, como Viação Cometa, 1001, Catarinense, Itapemirim, Guanabara e outras 350 viações parceiras.</p>
         </div>
     </div>
 
     <div class="card-inf">
-        <img class="imagem-cards" src="../Images/card_bilhetes.png" alt="Avatar" style="width:100%">
+        <img class="imagem-cards" src="/Images/card_bilhetes.png" alt="Avatar" style="width:100%">
         <div class="container">
             <p class="paragrafo-card-viajar">Na Quero Passagem, você escolhe o horário, o assento e a empresa favorita para viajar. Finalize sua compra de passagem rodoviária online de forma rápida, segura e sem complicação.</p>
         </div>
     </div>
 
     <div class="card-inf">
-        <img class="imagem-cards" src="../Images/card_praia.png" alt="Avatar" style="width:100%">
+        <img class="imagem-cards" src="/Images/card_praia.png" alt="Avatar" style="width:100%">
         <div class="container">
             <p class="paragrafo-card-viajar">Confiança de quem já colocou mais de 15 milhões de passageiros na estrada. Compre sua passagem de ônibus em menos de 5 minutos e bora viajar tranquilo.</p>
         </div>
@@ -443,7 +443,7 @@
     <div class="footer-qp-container">
 
         <div class="footer-qp-left">
-            <img src="../Images/logo_nova_grande.png" alt="Quero Passagem" class="footer-qp-logo">
+            <img src="/Images/logo_nova_grande.png" alt="Quero Passagem" class="footer-qp-logo">
 
             <p>
                 Na Quero Passagem sua compra é totalmente segura!
@@ -513,7 +513,7 @@
     </div>
 </footer>
 
-<script src="JavaScript/redirecionamento.js"></script>
+<script src="/index.js"></script>
 
 </body>
 </html>

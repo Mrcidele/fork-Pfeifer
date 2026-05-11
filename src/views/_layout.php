@@ -7,22 +7,26 @@ use App\Core\View;
 /** @var string $content */
 /** @var string|null $title */
 
-$flash = View::pullFlash();
+$flash = View::pullFlash();?>
 
-?><!doctype html>
-<html lang="pt-BR">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title><?= htmlspecialchars($title ?? 'Task App', ENT_QUOTES, 'UTF-8') ?></title>
-    <link rel="stylesheet" href="/app.css">
-</head>
-<body>
+<?php if (($title ?? '') !== 'Login' && ($title ?? '') !== 'Quero Passagem'): ?>
 <header>
     <nav>
         <a href="/viacoes">Viações</a>
     </nav>
 </header>
+<?php endif; ?>
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?= htmlspecialchars($title ?? 'Task App', ENT_QUOTES, 'UTF-8') ?></title>
+    <link rel="stylesheet" href="/<?= $css ?? 'app.css' ?>">
+</head>
+<body>
+
 
 <?php if ($flash !== null): ?>
     <div class="flash">

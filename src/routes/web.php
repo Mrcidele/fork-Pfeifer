@@ -12,3 +12,5 @@ $router->get('/viacoes/edit', [ViacaoController::class, 'edit']);
 $router->post('/viacoes/update', [ViacaoController::class, 'update']);
 $router->get('/viacoes/delete', [ViacaoController::class, 'destroy']);
 $router->get('/viacoes/historico', [ViacaoController::class, 'historico']);
+$router->get('/viacoes/home', [ViacaoController::class, 'home']);
+$router->get('/viacoes/login', [ViacaoController::class, 'login']);

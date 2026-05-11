@@ -12,14 +12,6 @@ body {
     background-color: #ffffff;
 }
 
-.left-panel {
-    background-color: #0a1f3c;
-    width: 30%;
-    padding: 40px;
-    display: flex;
-    flex-direction: column;
-}
-
 .logo {
     display: flex;
     justify-content: center;
@@ -43,7 +35,7 @@ body {
 
 .help-center {
     position: absolute;
-    top: 30px;
+    top: 60px;
     right: 40px;
     color: #0a1f3c;
     text-decoration: none;

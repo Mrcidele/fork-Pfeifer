@@ -80,7 +80,7 @@ Na inicializacao do container `app`, o Composer gera `vendor/autoload.php` autom
 
 2. Acesse:
 
-- http://localhost:8081/viacoes
+- http://localhost:8081/viacoes/home#
 
 3. Para parar:
 

@@ -34,6 +34,22 @@ final class ViacaoController
         ]);
     }
 
+    public function home(): void
+    {
+        View::render('viacoes/home', [
+            'title' => 'Quero Passagem',
+            'css' => 'home'
+        ], false);
+    }
+
+    public function login(): void
+    {
+        View::render('viacoes/login', [
+            'title' => 'Login',
+            'css' => 'login'
+        ], false);
+    }
+
     public function store(): void
     {
         $this->save();

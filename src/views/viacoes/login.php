@@ -4,52 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Quero Passagem</title>
-
-    <link rel="stylesheet" href="../../../public/login.css">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/login.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
-<div class="left-panel">
+<a href="#" class="help-center">
+    <i class="fa-regular fa-circle-question"></i>
+    Central de ajuda
+</a>
 
-    <div class="logo">
-        <img src="Images/logo-branca.png"
-             onclick="irParaHome()"
-             width="110"
-             height="50">
-    </div>
-
-    <div class="phone-container">
-        <img src="Images/808212b4-ce05-4c77-ab32-35c01f5526d3.png"
-             width="400"
-             height="600">
-    </div>
-
-</div>
+<br>
+<br>
+<br>
 
 <div class="right-panel">
-
-    <a href="#" class="help-center">
-        <i class="fa-regular fa-circle-question"></i>
-        Central de ajuda
-    </a>
 
     <div class="login-container">
 
         <h1>Acesse suas viagens</h1>
-
-        <?php if ($erro): ?>
-            <div style="
-                background:#ffe5e5;
-                color:red;
-                padding:10px;
-                border-radius:8px;
-                margin-bottom:15px;
-            ">
-                <?= $erro ?>
-            </div>
-        <?php endif; ?>
 
         <form method="POST">
 
@@ -69,7 +42,6 @@
                     required>
             </div>
             <div class="input-group">
-                <input type="hidden" name="token" value="<?= $_SESSION['token'] ?>">
             </div>
 
             <div class="info-box">
@@ -79,7 +51,7 @@
                 </p>
             </div>
 
-            <button class="btn-continue" type="submit">
+            <button class="btn-continue" type="submit" onclick="irParaLista()">
                 CONTINUAR
             </button>
 
@@ -106,7 +78,7 @@
 
 </div>
 
-<script src="JavaScript/redirecionamento.js"></script>
+<script src="/index.js"></script>
 
 </body>
 </html>
