@@ -14,46 +14,36 @@
     Central de ajuda
 </a>
 
-<br>
-<br>
-<br>
-
 <div class="right-panel">
-
     <div class="login-container">
 
         <h1>Acesse suas viagens</h1>
 
-        <form method="POST">
+        <?php if (!empty($erro)): ?>
+            <div class="error-box">
+                <i class="fa-solid fa-circle-exclamation"></i>
+                <p><?= htmlspecialchars($erro) ?></p>
+            </div>
+        <?php endif; ?>
+
+        <form method="POST" action="/login">
 
             <div class="input-group">
-                <input
-                    type="text"
-                    name="email"
-                    placeholder="E-mail"
-                    required>
+                <input type="email" name="email" placeholder="E-mail"
+                       value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
+                       required>
             </div>
 
             <div class="input-group">
-                <input
-                    type="text"
-                    name="senha"
-                    placeholder="Senha"
-                    required>
-            </div>
-            <div class="input-group">
+                <input type="password" name="senha" placeholder="Senha" required>
             </div>
 
             <div class="info-box">
                 <i class="fa-solid fa-circle-info"></i>
-                <p>
-                    Área exclusiva para administradores.
-                </p>
+                <p>Área exclusiva para administradores.</p>
             </div>
 
-            <button class="btn-continue" type="submit" onclick="irParaLista()">
-                CONTINUAR
-            </button>
+            <button class="btn-continue" type="submit">CONTINUAR</button>
 
         </form>
 
@@ -63,22 +53,17 @@
             <i class="fa-brands fa-facebook"></i>
             Continue com o Facebook
         </button>
-
         <button class="social-btn">
             <i class="fa-brands fa-google"></i>
             Continue com o Google
         </button>
-
         <button class="social-btn">
             <i class="fa-brands fa-apple"></i>
             Continue com a Apple
         </button>
 
     </div>
-
 </div>
-
-<script src="/index.js"></script>
 
 </body>
 </html>

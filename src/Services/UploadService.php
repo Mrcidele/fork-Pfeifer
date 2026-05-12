@@ -17,7 +17,7 @@ final class UploadService
         'jpg', 'jpeg', 'png', 'gif', 'webp',
     ];
 
-    private const MAX_SIZE = 2 * 1024 * 1024; // 2MB
+    private const MAX_SIZE = 2 * 1024 * 1024;
 
     public function __construct()
     {
@@ -44,6 +44,7 @@ final class UploadService
         }
 
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
         if (!in_array($ext, self::ALLOWED_EXTENSIONS, true)) {
             throw new \Exception("Extensão não permitida: {$ext}.");
         }
