@@ -39,6 +39,43 @@ final class ViacaoHistoricoRepository
         ]);
     }
 
+    public function filter(string $acao = '', string $usuario = '', string $data = ''): array
+    {
+        $where = [];
+        $params = [];
+
+        if ($acao !== '') {
+            $where[] = "h.acao = ?";
+            $params[] = $acao;
+        }
+
+        if ($usuario !== '') {
+            $where[] = "u.nome LIKE ?";
+            $params[] = "%{$usuario}%";
+        }
+
+        if ($data !== '') {
+            $where[] = "DATE(h.data_acao) = ?";
+            $params[] = $data;
+        }
+
+        $sql = "
+        SELECT h.*, u.nome AS usuario_nome
+        FROM historico_viacoes h
+        LEFT JOIN usuarios u ON u.id = h.usuario_id
+    ";
+
+        if ($where) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+
+        $sql .= " ORDER BY h.id DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function all(): array
     {
         $sql = "

@@ -71,6 +71,37 @@ final class ViacaoRepository
         ]);
     }
 
+    public function filter(string $nome = '', string $cidade = '', string $status = ''): array
+    {
+        $where = [];
+        $params = [];
+
+        if ($nome !== '') {
+            $where[] = "nome LIKE ?";
+            $params[] = "%{$nome}%";
+        }
+
+        if ($cidade !== '') {
+            $where[] = "cidade LIKE ?";
+            $params[] = "%{$cidade}%";
+        }
+
+        if ($status !== '') {
+            $where[] = "status = ?";
+            $params[] = $status;
+        }
+
+        $sql = "SELECT * FROM viacoes";
+        if ($where) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+        $sql .= " ORDER BY id DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function delete(int $id): void
     {
         $stmt = $this->pdo->prepare(

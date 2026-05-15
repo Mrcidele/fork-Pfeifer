@@ -39,6 +39,7 @@ final class UploadService
         }
 
         $mime = mime_content_type($file['tmp_name']);
+
         if (!in_array($mime, self::ALLOWED_MIME_TYPES, true)) {
             throw new \Exception("Tipo de arquivo não permitido: {$mime}.");
         }

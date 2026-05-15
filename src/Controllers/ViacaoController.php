@@ -4,27 +4,14 @@ namespace App\Controllers;
 
 use App\Core\View;
 use App\Services\ViacaoService;
-use App\Services\UploadService;
 
 final class ViacaoController
 {
     private ViacaoService $service;
-    private UploadService $upload;
 
     public function __construct()
     {
         $this->service = new ViacaoService();
-        $this->upload = new UploadService();
-    }
-
-    public function index(): void
-    {
-        $viacoes = $this->service->all();
-
-        View::render('viacoes/index', [
-            'title' => 'Viações',
-            'viacoes' => $viacoes
-        ]);
     }
 
     public function create(): void
@@ -38,7 +25,7 @@ final class ViacaoController
     {
         View::render('viacoes/home', [
             'title' => 'Quero Passagem',
-            'css' => 'home'
+            'css'   => 'home'
         ], false);
     }
 
@@ -46,7 +33,7 @@ final class ViacaoController
     {
         View::render('viacoes/login', [
             'title' => 'Login',
-            'css' => 'login'
+            'css'   => 'login'
         ], false);
     }
 
@@ -63,24 +50,14 @@ final class ViacaoController
     private function save(bool $isUpdate = false): void
     {
         try {
-
             $data = $_POST;
-
-            $logo = null;
-
-            if (isset($_FILES['logo'])) {
-                $logo = $this->upload->upload($_FILES['logo']);
-            }
-
-            if ($logo) {
-                $data['logo'] = $logo;
-            }
+            $file = $_FILES['logo'] ?? null;
 
             if ($isUpdate) {
                 $id = (int) $_POST['id'];
-                $this->service->update($id, $data);
+                $this->service->update($id, $data, $file);
             } else {
-                $this->service->create($data);
+                $this->service->create($data, $file);
             }
 
             header('Location: /viacoes');
@@ -94,9 +71,7 @@ final class ViacaoController
     public function destroy(): void
     {
         $id = (int) $_GET['id'];
-
         $this->service->delete($id);
-
         header('Location: /viacoes');
         exit;
     }
@@ -104,22 +79,44 @@ final class ViacaoController
     public function edit(): void
     {
         $id = (int) $_GET['id'];
-
         $viacao = $this->service->find($id);
-
         View::render('viacoes/edit', [
-            'title' => 'Editar Viação',
+            'title'  => 'Editar Viação',
             'viacao' => $viacao
+        ]);
+    }
+
+    public function index(): void
+    {
+        $nome   = trim($_GET['nome']   ?? '');
+        $cidade = trim($_GET['cidade'] ?? '');
+        $status = $_GET['status'] ?? '';
+
+        $viacoes = ($nome || $cidade || $status !== '')
+            ? $this->service->filter($nome, $cidade, $status)
+            : $this->service->all();
+
+        View::render('viacoes/index', [
+            'title'   => 'Viações',
+            'viacoes' => $viacoes,
+            'filtros' => compact('nome', 'cidade', 'status'),
         ]);
     }
 
     public function historico(): void
     {
-        $historico = $this->service->historicoAll();
+        $acao    = trim($_GET['acao']    ?? '');
+        $usuario = trim($_GET['usuario'] ?? '');
+        $data    = trim($_GET['data']    ?? '');
+
+        $historico = ($acao || $usuario || $data)
+            ? $this->service->filterHistorico($acao, $usuario, $data)
+            : $this->service->historicoAll();
 
         View::render('viacoes/historico', [
-            'title' => 'Histórico de Viações',
-            'historico' => $historico
+            'title'     => 'Histórico de Viações',
+            'historico' => $historico,
+            'filtros'   => compact('acao', 'usuario', 'data'),
         ]);
     }
 }

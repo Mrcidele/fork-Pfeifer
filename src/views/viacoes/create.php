@@ -1,7 +1,6 @@
-<h1>Nova Viação</h1>
-
+<div class="container-form-add-edit">
 <form method="POST" action="/viacoes/store" enctype="multipart/form-data">
-
+    <h1>Nova Viação</h1>
     <label>Nome</label>
     <input
             type="text"
@@ -61,3 +60,4 @@
     </div>
 
 </form>
+    <div/>

@@ -10,7 +10,7 @@ require_once __DIR__ . '/../database/db.php';
 use App\Core\Router;
 use App\Services\AuthService;
 
-// proteção de rotas
+//proteção de rotas
 $rotasPublicas = ['/login', '/viacoes/home'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 

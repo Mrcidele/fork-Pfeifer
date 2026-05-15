@@ -17,6 +17,9 @@
 <div class="right-panel">
     <div class="login-container">
 
+        <a  href="/viacoes/home#">
+<img src="/Images/logo_nova_grande.png" alt="Logo" width="250" height="120">
+        </a>
         <h1>Acesse suas viagens</h1>
 
         <?php if (!empty($erro)): ?>

@@ -1,7 +1,6 @@
-<h1>Editar Viação</h1>
-
+<div class="container-form-add-edit">
 <form method="POST" action="/viacoes/update" enctype="multipart/form-data">
-
+    <h1>Editar Viação</h1>
     <input
             type="hidden"
             name="id"
@@ -78,3 +77,4 @@
     </div>
 
 </form>
+<div/>

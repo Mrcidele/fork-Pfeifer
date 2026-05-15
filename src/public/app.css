@@ -58,12 +58,6 @@ nav a:hover {
   color: var(--primary-hover);
 }
 
-main {
-  max-width: var(--max-width);
-  margin: 30px auto;
-  padding: 0 16px;
-}
-
 h1 {
   margin: 0 0 20px;
   font-size: 32px;
@@ -131,10 +125,21 @@ button[type="submit"]:hover {
 
 form {
   background: var(--bg);
-  padding: 24px;
+  padding: 4px 14px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
-  max-width: 700px;
+  padding: 10px 0px;
+  padding: 50px;
+}
+
+.container-historico{
+  padding: 10px 200px;
+}
+
+.container-form-add-edit{
+  justify-content: center;
+  align-items: center;
+  margin: 20px 90px;
 }
 
 label {
@@ -148,7 +153,6 @@ select,
 textarea {
   width: 100%;
   padding: 10px 12px;
-  margin-bottom: 16px;
   border-radius: var(--radius);
   border: 1px solid var(--border);
   font: inherit;
@@ -219,4 +223,100 @@ tr:hover td {
 
 .muted {
   color: var(--muted);
+}
+
+.filter-form {
+  display: flex;
+  padding: 18px;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.container-form{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-input {
+  flex: 1;
+  min-width: 150px;
+  padding: 11px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.filter-input-data {
+  flex: 1;
+  min-width: 150px;
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.filter-input:focus {
+  border-color: #2b6cb0;
+}
+
+.btn-secondary {
+  background-color: #e5e7eb;
+  color: #374151;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.btn-secondary:hover {
+  background-color: #d1d5db;
+}
+
+.diff-table {
+  font-size: 12px;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.diff-table th {
+  background: #f0f4f8;
+  padding: 4px 8px;
+  text-align: left;
+  font-size: 11px;
+  color: #4a4a4a;
+}
+
+.diff-table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.diff-antes {
+  color: #c53030;
+  text-decoration: line-through;
+}
+
+.diff-depois {
+  color: #276749;
+  font-weight: 600;
 }

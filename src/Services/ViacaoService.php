@@ -10,13 +10,14 @@ final class ViacaoService
 {
     private ViacaoRepository $repo;
     private ViacaoHistoricoRepository $historicoRepo;
+    private UploadService $upload;
 
     public function __construct()
     {
         $pdo = getPdo();
-
-        $this->repo = new ViacaoRepository($pdo);
+        $this->repo          = new ViacaoRepository($pdo);
         $this->historicoRepo = new ViacaoHistoricoRepository($pdo);
+        $this->upload        = new UploadService();
     }
 
     public function all(): array
@@ -29,38 +30,84 @@ final class ViacaoService
         return $this->repo->find($id);
     }
 
-    public function create(array $data): void
+    public function create(array $data, ?array $file = null): void
     {
+        if ($file) {
+            $logo = $this->upload->upload($file);
+            if ($logo) {
+                $data['logo'] = $logo;
+            }
+        }
+
         ViacaoValidator::validate($data);
 
         $id = $this->repo->create($data);
 
+        $alteracao = json_encode([
+            'antes'  => null,
+            'depois' => [
+                'nome'   => $data['nome'],
+                'url'    => $data['url'],
+                'cidade' => $data['cidade'],
+                'status' => $data['status'],
+                'logo'   => $data['logo'] ?? null,
+            ],
+        ], JSON_UNESCAPED_UNICODE);
+
         $this->historicoRepo->create(
             $id,
-            1,
-            'Viação criada',
+            $_SESSION['usuario_id'] ?? 1,
+            $alteracao,
             'criado'
         );
     }
 
-    public function update(int $id, array $data): void
+    public function update(int $id, array $data, ?array $file = null): void
     {
-        ViacaoValidator::validate($data);
-
         $viacaoAtual = $this->repo->find($id);
 
         if (!$viacaoAtual) {
             throw new \Exception('Viação não encontrada');
         }
 
+        if ($file) {
+            $logo = $this->upload->upload($file);
+            if ($logo) {
+                $data['logo'] = $logo;
+            }
+        }
+
         $data['logo'] = $data['logo'] ?? $viacaoAtual['logo'];
+
+        ViacaoValidator::validate($data);
+
+        $antes = [
+            'nome'   => $viacaoAtual['nome'],
+            'url'    => $viacaoAtual['url'],
+            'cidade' => $viacaoAtual['cidade'],
+            'status' => $viacaoAtual['status'],
+            'logo'   => $viacaoAtual['logo'],
+        ];
+
+        $depois = [
+            'nome'   => $data['nome'],
+            'url'    => $data['url'],
+            'cidade' => $data['cidade'],
+            'status' => $data['status'],
+            'logo'   => $data['logo'],
+        ];
+
+        $alteracao = json_encode([
+            'antes'  => $antes,
+            'depois' => $depois,
+        ], JSON_UNESCAPED_UNICODE);
 
         $this->repo->update($id, $data);
 
         $this->historicoRepo->create(
             $id,
-            1,
-            'Viação editada',
+            $_SESSION['usuario_id'] ?? 1,
+            $alteracao,
             'editado'
         );
     }
@@ -73,10 +120,21 @@ final class ViacaoService
             throw new \Exception('Viação não encontrada');
         }
 
+        $alteracao = json_encode([
+            'antes'  => [
+                'nome'   => $viacao['nome'],
+                'url'    => $viacao['url'],
+                'cidade' => $viacao['cidade'],
+                'status' => $viacao['status'],
+                'logo'   => $viacao['logo'],
+            ],
+            'depois' => null,
+        ], JSON_UNESCAPED_UNICODE);
+
         $this->historicoRepo->create(
             $id,
-            1,
-            'Viação excluída',
+            $_SESSION['usuario_id'] ?? 1,
+            $alteracao,
             'excluido'
         );
 
@@ -86,5 +144,15 @@ final class ViacaoService
     public function historicoAll(): array
     {
         return $this->historicoRepo->all();
+    }
+
+    public function filter(string $nome, string $cidade, string $status): array
+    {
+        return $this->repo->filter($nome, $cidade, $status);
+    }
+
+    public function filterHistorico(string $acao, string $usuario, string $data): array
+    {
+        return $this->historicoRepo->filter($acao, $usuario, $data);
     }
 }
