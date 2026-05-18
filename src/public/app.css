@@ -12,8 +12,8 @@
   --danger: #dc2626;
   --danger-hover: #b91c1c;
 
-  --success: #059669;
-  --success-hover: #047857;
+  --success: #2764c0;
+  --success-hover: #1f2c64;
 
   --radius: 8px;
 }
@@ -31,8 +31,26 @@ body {
   margin: 0;
   font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
   color: var(--text);
-  background: var(--bg-page);
+  background: linear-gradient(-45deg, #1f628f, #1e4b5d, #005879, #00d1ff);
+  background-size: 400% 400%;
+  animation: gradientBG 12s ease infinite;
   line-height: 1.5;
+}
+
+@keyframes gradientBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+h1{
+  color: white;
 }
 
 header {

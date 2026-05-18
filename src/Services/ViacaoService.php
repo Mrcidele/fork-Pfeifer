@@ -12,6 +12,7 @@ final class ViacaoService
     private ViacaoHistoricoRepository $historicoRepo;
     private UploadService $upload;
 
+    //arquivos de necessários para validar as regras de negócio
     public function __construct()
     {
         $pdo = getPdo();
@@ -29,7 +30,7 @@ final class ViacaoService
     {
         return $this->repo->find($id);
     }
-
+//add na tabela
     public function create(array $data, ?array $file = null): void
     {
         if ($file) {
@@ -61,7 +62,7 @@ final class ViacaoService
             'criado'
         );
     }
-
+//edita as inf
     public function update(int $id, array $data, ?array $file = null): void
     {
         $viacaoAtual = $this->repo->find($id);
@@ -111,7 +112,7 @@ final class ViacaoService
             'editado'
         );
     }
-
+//delete valida
     public function delete(int $id): void
     {
         $viacao = $this->repo->find($id);
@@ -141,16 +142,19 @@ final class ViacaoService
         $this->repo->delete($id);
     }
 
+//acessa o metodo no repository para verificar
     public function historicoAll(): array
     {
         return $this->historicoRepo->all();
     }
 
+//acessa o filtro para verificar
     public function filter(string $nome, string $cidade, string $status): array
     {
         return $this->repo->filter($nome, $cidade, $status);
     }
 
+//acessa o filtro de historico para verificar
     public function filterHistorico(string $acao, string $usuario, string $data): array
     {
         return $this->historicoRepo->filter($acao, $usuario, $data);

@@ -328,13 +328,12 @@
 
     <div class="container-grid">
 
-        <?php foreach ($viacoes as $v): ?>
             <div class="item">
-                <img src="uploads/<?= $v['logo'] ?>" width="80" height="100" style="border-radius: 5px">
+                <img src="uploads/" width="80" height="100" style="border-radius: 5px">
                 <hr>
-                <p><?= $v['nome'] ?></p>
+                <p></p>
             </div>
-        <?php endforeach;?>
+
     </div>
 
 </section>

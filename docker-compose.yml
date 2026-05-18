@@ -11,7 +11,10 @@ services:
         composer install --no-interaction --prefer-dist;
       else
         composer dump-autoload --no-interaction --optimize;
-      fi && apache2-foreground"
+      fi &&
+      php src/database/migrations/migrate.php &&
+      php src/database/seeds/seed.php &&
+      apache2-foreground"
     volumes:
       - ./:/var/www/html
     environment:
@@ -20,7 +23,8 @@ services:
       DB_USER: app
       DB_PASSWORD: app123
     depends_on:
-      - db
+      db:
+        condition: service_healthy
 
   db:
     image: mysql:8.0
@@ -36,6 +40,11 @@ services:
     volumes:
       - task_mysql_data:/var/lib/mysql
       - ./src/database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "app", "-papp123"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
   task_mysql_data:

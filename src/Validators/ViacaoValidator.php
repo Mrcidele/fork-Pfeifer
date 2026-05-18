@@ -4,6 +4,7 @@ namespace App\Validators;
 
 final class ViacaoValidator
 {
+    //valida os campos de input
     public static function validate(array $data): void
     {
         if (empty($data['nome'])) {

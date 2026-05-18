@@ -14,6 +14,7 @@ final class ViacaoController
         $this->service = new ViacaoService();
     }
 
+//nova viacao (renderiza a tela com a rota)
     public function create(): void
     {
         View::render('viacoes/create', [
@@ -21,6 +22,7 @@ final class ViacaoController
         ]);
     }
 
+//renderiza a página principal
     public function home(): void
     {
         View::render('viacoes/home', [
@@ -29,6 +31,7 @@ final class ViacaoController
         ], false);
     }
 
+//renderiza a página de login
     public function login(): void
     {
         View::render('viacoes/login', [
@@ -37,11 +40,13 @@ final class ViacaoController
         ], false);
     }
 
+//salva as inf do regitro
     public function store(): void
     {
         $this->save();
     }
 
+//salva a edição
     public function update(): void
     {
         $this->save(true);
@@ -68,6 +73,7 @@ final class ViacaoController
         }
     }
 
+    //exclui por id
     public function destroy(): void
     {
         $id = (int) $_GET['id'];
@@ -76,6 +82,7 @@ final class ViacaoController
         exit;
     }
 
+    //edita por id
     public function edit(): void
     {
         $id = (int) $_GET['id'];

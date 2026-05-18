@@ -1,79 +1,14 @@
-# Task App (mini Laravel-like em PHP)
+# Tabela de viações (crud)
 
-Projeto de referência para estagiários praticarem uma arquitetura mais organizada antes de entrar em Laravel.
-
-Fluxo principal do app:
-
-- Front Controller (`src/public/index.php`)
-- Router (`src/Core/Router.php`)
-- Controller (`src/Controllers/TaskController.php`)
-- Service (`src/Services/TaskService.php`)
-- Model/DTO (`src/Models/Task.php`)
-- Views (`src/views/*.php`)
-
-## Objetivo didático
-
-Este projeto demonstra, de forma pequena e funcional:
-
-- Roteamento com parâmetros (`/tasks/{id}/edit`)
-- Separação de responsabilidades por camadas
-- CRUD completo com MySQL
-- Flash message e padrão PRG (Post/Redirect/Get)
-- Estrutura compatível com PSR-4 para reduzir warnings de IDE
-
-## Stack
-
-- PHP 8.4 + Apache (Docker)
-- MySQL 8
-- Composer 2 (no container) para autoload PSR-4
-
-## Estrutura do projeto
-
-```text
-task-app/
-	docker-compose.yml
-	Dockerfile
-	composer.json
-
-	src/
-		public/
-			index.php
-			app.css
-
-		Core/
-			Router.php
-			View.php
-
-		Controllers/
-			TaskController.php
-
-		Services/
-			TaskService.php
-
-		Models/
-			Task.php
-
-		views/
-			_layout.php
-			index.php
-			create.php
-			edit.php
-
-		routes/
-			web.php
-
-		database/
-			db.php
-			init.sql
-```
+Projeto de Matheus Pfeifer.
 
 ## Como rodar
 
 1. Suba os containers:
 
 ```bash
-cd task-app
-docker compose up --build -d
+cd ~/Downloads/php-task-app-main
+docker compose up --build
 ```
 
 Na inicializacao do container `app`, o Composer gera `vendor/autoload.php` automaticamente.
@@ -90,18 +25,46 @@ docker compose down
 
 ## Rotas
 
-- `GET /` -> lista tasks
-- `GET /tasks` -> lista tasks
-- `GET /tasks/create` -> formulário de criação
-- `POST /tasks` -> cria task
-- `GET /tasks/{id}/edit` -> formulário de edição
-- `POST /tasks/{id}` -> atualiza task
-- `POST /tasks/{id}/delete` -> remove task
+### Públicas
+
+- `GET /` → lista de viações
+- `GET /viacoes` → lista de viações
+- `GET /viacoes/home` → página inicial
+- `GET /viacoes/login` → tela visual de login
+- `GET /login` → formulário de autenticação
+- `POST /login` → autentica usuário
+- `GET /logout` → encerra sessão
+
+---
+
+### CRUD de Viações
+
+- `GET /viacoes/create` → formulário de criação
+- `POST /viacoes/store` → cria uma nova viação
+- `GET /viacoes/edit?id={id}` → formulário de edição
+- `POST /viacoes/update` → atualiza uma viação
+- `GET /viacoes/delete?id={id}` → remove uma viação
+- `GET /viacoes/historico` → histórico de alterações
+
+---
+
+### Fluxo principal
+
+```txt
+GET /
+ ↓
+ViacaoController@index
+ ↓
+ViacaoService
+ ↓
+ViacaoRepository
+ ↓
+View::render()
 
 ## Banco de dados
 
 - O MySQL é iniciado via Docker Compose.
-- A tabela `tasks` é criada automaticamente no primeiro start pelo `src/database/init.sql`.
+- A tabela `viacoes` é criada automaticamente no primeiro start pelo `src/database/init.sql`.
 
 Reset completo (recria banco e dados seed):
 
@@ -110,31 +73,9 @@ docker compose down -v
 docker compose up --build -d
 ```
 
-## PSR-4 e IDE
-
-Para reduzir mensagens como "Namespace name doesn't match the PSR-0/PSR-4 project structure":
-
-- Namespaces usam `App\\...`
-- Estrutura de classes está em `src/Core`, `src/Controllers`, `src/Services`, `src/Models`
-- `composer.json` define:
-
-```json
-"autoload": {
-	"psr-4": {
-		"App\\": "src/"
-	}
-}
-```
-
 Apos mudancas de namespace/estrutura, rode:
 
 ```bash
 composer dump-autoload --working-dir=.
 ```
 
-## Próximos passos sugeridos para estudo
-
-- Adicionar validação mais robusta (camada dedicada)
-- Introduzir método HTTP `PUT/DELETE` com spoofing de `_method`
-- Criar testes de integração para o fluxo de rotas
-- Extrair camada de repositório para separar SQL da regra de negócio

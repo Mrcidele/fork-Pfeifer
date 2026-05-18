@@ -13,6 +13,16 @@ final class AuthService
         $this->repository = new UsuarioRepository();
     }
 
+//depois que ele faz o check ele redireciona para a lista de viações
+    public static function redirectIfAuthenticated(): void
+    {
+        if (self::check()) {
+            header('Location: /viacoes');
+            exit;
+        }
+    }
+
+//aqui é a parte de validação de login
     public function login(string $email, string $senha): void
     {
         if (empty($email) || empty($senha)) {
@@ -41,18 +51,20 @@ final class AuthService
         $_SESSION['usuario_nome'] = $usuario['nome'];
         $_SESSION['usuario_tipo'] = $usuario['tipo'];
     }
-
+//aqui ele desloga
     public function logout(): void
     {
         $_SESSION = [];
         session_destroy();
     }
 
+//faz o check de acordo com o id do login
     public static function check(): bool
     {
         return isset($_SESSION['usuario_id']);
     }
 
+//aqui ele só permite logar de acordo com o tipo de usuario
     public static function admin(): bool
     {
         return self::check() && $_SESSION['usuario_tipo'] === 'usuario';

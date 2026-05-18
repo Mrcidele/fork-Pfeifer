@@ -16,11 +16,7 @@ final class AuthController
 
     public function showLogin(): void
     {
-        //se já estiver logado redireciona
-        if (AuthService::check()) {
-            header('Location: /viacoes');
-            exit;
-        }
+        AuthService::redirectIfAuthenticated();
 
         View::render('viacoes/login', [
             'title' => 'Login',
@@ -28,6 +24,7 @@ final class AuthController
         ], false);
     }
 
+    //ele vai passar pelo processo de validação de login e enviar para o service
     public function login(): void
     {
         try {
@@ -48,9 +45,11 @@ final class AuthController
         }
     }
 
+//ele acessa a função do logout
     public function logout(): void
     {
         $this->service->logout();
+
         header('Location: /login');
         exit;
     }

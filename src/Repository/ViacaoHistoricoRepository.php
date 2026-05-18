@@ -6,13 +6,14 @@ use PDO;
 
 final class ViacaoHistoricoRepository
 {
+    //banco
     private PDO $pdo;
-
+//conecta com banco
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
-
+//prepara query para depois executar
     public function create(
         int $viacaoId,
         int $usuarioId,
@@ -38,7 +39,7 @@ final class ViacaoHistoricoRepository
             $acao
         ]);
     }
-
+//parte de filtro
     public function filter(string $acao = '', string $usuario = '', string $data = ''): array
     {
         $where = [];
@@ -76,6 +77,7 @@ final class ViacaoHistoricoRepository
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+//pega de acordo com o id do usuario as alterações
     public function all(): array
     {
         $sql = "

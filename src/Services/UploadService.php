@@ -13,10 +13,11 @@ final class UploadService
         'image/webp',
     ];
 
+//extensões aceitaveis
     private const ALLOWED_EXTENSIONS = [
         'jpg', 'jpeg', 'png', 'gif', 'webp',
     ];
-
+//tamanho maximo aceito
     private const MAX_SIZE = 2 * 1024 * 1024;
 
     public function __construct()
@@ -24,6 +25,7 @@ final class UploadService
         $this->path = dirname(__DIR__) . '/public/uploads/';
     }
 
+    //validação no upload
     public function upload(array $file): ?string
     {
         if ($file['error'] !== UPLOAD_ERR_OK) {
@@ -67,6 +69,7 @@ final class UploadService
         return $nome;
     }
 
+//caso de erro na parte de imagem tipo em inserir
     private function getUploadError(int $code): string
     {
         return match($code) {

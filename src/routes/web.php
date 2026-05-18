@@ -5,6 +5,7 @@ use App\Controllers\ViacaoController;
 use App\Controllers\AuthController;
 /** @var App\Core\Router $router */
 
+//rotas
 $router->get('/', [ViacaoController::class, 'index']);
 $router->get('/viacoes', [ViacaoController::class, 'index']);
 $router->get('/viacoes/create', [ViacaoController::class, 'create']);

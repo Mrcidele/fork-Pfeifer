@@ -11,6 +11,7 @@ final class UsuarioRepository
         $this->pdo = getPdo();
     }
 
+//procura no banco o email do usuario
     public function findByEmail(string $email): ?array
     {
         $stmt = $this->pdo->prepare(
