@@ -14,7 +14,8 @@ final class UploadService
         'image/svg+xml',
         'image/svg',
     ];
-//extensões de imagem
+
+    //extensões de imagem
     private const ALLOWED_EXTENSIONS = [
         'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
     ];
@@ -25,7 +26,8 @@ final class UploadService
     {
         $this->path = dirname(__DIR__) . '/public/uploads/';
     }
-//parte de validação
+
+    //parte de validação
     public function upload(array $file): ?string
     {
         if ($file['error'] !== UPLOAD_ERR_OK) {
@@ -76,7 +78,7 @@ final class UploadService
         return $nome;
     }
 
-//caso tenha algum erro no upload
+    //caso tenha algum erro no upload
     private function getUploadError(int $code): string
     {
         return match($code) {

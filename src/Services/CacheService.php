@@ -27,12 +27,9 @@ final class CacheService
         }
     }
 
-    /**
-     * Busca um valor no cache
-     *
-     * @param string $chave
-     * @return mixed|null
-     */
+    /*busca um valor no cache
+      @param string $chave
+      @return mixed|null*/
     public function get(string $chave): mixed
     {
         // gera nome único do arquivo usando hash MD5
