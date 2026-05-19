@@ -22,12 +22,21 @@ final class ViacaoController
         ]);
     }
 
-//renderiza a página principal
+//renderiza a página principal e passa os dados para a home
     public function home(): void
     {
+        $cache   = new \App\Services\CacheService(ttl: 300);
+        $viacoes = $cache->get('home_viacoes');
+
+        if ($viacoes === null) {
+            $viacoes = $this->service->allAtivas();
+            $cache->set('home_viacoes', $viacoes);
+        }
+
         View::render('viacoes/home', [
-            'title' => 'Quero Passagem',
-            'css'   => 'home'
+            'title'   => 'Quero Passagem',
+            'css'     => 'home',
+            'viacoes' => $viacoes,
         ], false);
     }
 

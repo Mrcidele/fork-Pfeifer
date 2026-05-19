@@ -11,21 +11,21 @@ final class UploadService
         'image/png',
         'image/gif',
         'image/webp',
+        'image/svg+xml',
+        'image/svg',
+    ];
+//extensões de imagem
+    private const ALLOWED_EXTENSIONS = [
+        'jpg', 'jpeg', 'png', 'gif', 'webp', 'svg',
     ];
 
-//extensões aceitaveis
-    private const ALLOWED_EXTENSIONS = [
-        'jpg', 'jpeg', 'png', 'gif', 'webp',
-    ];
-//tamanho maximo aceito
     private const MAX_SIZE = 2 * 1024 * 1024;
 
     public function __construct()
     {
         $this->path = dirname(__DIR__) . '/public/uploads/';
     }
-
-    //validação no upload
+//parte de validação
     public function upload(array $file): ?string
     {
         if ($file['error'] !== UPLOAD_ERR_OK) {
@@ -41,19 +41,26 @@ final class UploadService
         }
 
         $mime = mime_content_type($file['tmp_name']);
-
         if (!in_array($mime, self::ALLOWED_MIME_TYPES, true)) {
             throw new \Exception("Tipo de arquivo não permitido: {$mime}.");
         }
 
         $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
         if (!in_array($ext, self::ALLOWED_EXTENSIONS, true)) {
             throw new \Exception("Extensão não permitida: {$ext}.");
         }
 
-        if (exif_imagetype($file['tmp_name']) === false) {
-            throw new \Exception('O arquivo não é uma imagem válida.');
+        // SVG é XML/texto — exif_imagetype não suporta, valida diferente
+        if ($ext === 'svg') {
+            $conteudo = file_get_contents($file['tmp_name']);
+            if (preg_match('/<script/i', $conteudo) || preg_match('/on\w+\s*=/i', $conteudo)) {
+                throw new \Exception('SVG contém código não permitido.');
+            }
+        } else {
+            // Para outros formatos valida que é imagem real
+            if (exif_imagetype($file['tmp_name']) === false) {
+                throw new \Exception('O arquivo não é uma imagem válida.');
+            }
         }
 
         if (!is_dir($this->path)) {
@@ -69,7 +76,7 @@ final class UploadService
         return $nome;
     }
 
-//caso de erro na parte de imagem tipo em inserir
+//caso tenha algum erro no upload
     private function getUploadError(int $code): string
     {
         return match($code) {

@@ -27,13 +27,10 @@ docker compose down
 
 ### Públicas
 
-- `GET /` → lista de viações
-- `GET /viacoes` → lista de viações
 - `GET /viacoes/home` → página inicial
 - `GET /viacoes/login` → tela visual de login
 - `GET /login` → formulário de autenticação
 - `POST /login` → autentica usuário
-- `GET /logout` → encerra sessão
 
 ---
 
@@ -53,7 +50,7 @@ docker compose down
 ```txt
 GET /
  ↓
-ViacaoController@index
+ViacaoController
  ↓
 ViacaoService
  ↓
@@ -79,3 +76,27 @@ Apos mudancas de namespace/estrutura, rode:
 composer dump-autoload --working-dir=.
 ```
 
+---
+
+## init.sql
+
+O arquivo `src/database/init.sql` é mapeado para `docker-entrypoint-initdb.d`
+e executado pelo MySQL na primeira criação do container.
+
+Atualmente contém apenas `SELECT` para visualização das tabelas (útil para
+debug via cliente SQL) e os `DROP TABLE` estão comentados.
+
+Para forçar um reset completo do banco, descomente os `DROP TABLE` e recrie
+o volume:
+
+```sql
+DROP TABLE IF EXISTS viacoes;
+DROP TABLE IF EXISTS historico_viacoes;
+DROP TABLE IF EXISTS usuarios;
+```
+> **Atenção:** isso apaga todos os dados do banco permanentemente.
+
+```bash
+docker compose down -v
+docker compose up --build
+```

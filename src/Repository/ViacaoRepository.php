@@ -53,6 +53,13 @@ final class ViacaoRepository
         return (int) $this->pdo->lastInsertId();
     }
 
+    public function allAtivas(): array
+    {
+        return $this->pdo
+            ->query("SELECT * FROM viacoes WHERE status = 0 ORDER BY id DESC")
+            ->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 //prepara a query e executa para edita a viação
     public function update(int $id, array $data): void
     {

@@ -11,29 +11,34 @@ final class ViacaoService
     private ViacaoRepository $repo;
     private ViacaoHistoricoRepository $historicoRepo;
     private UploadService $upload;
+    private CacheService $cache;
 
-    //arquivos de necessários para validar as regras de negócio
     public function __construct()
     {
         $pdo = getPdo();
         $this->repo          = new ViacaoRepository($pdo);
         $this->historicoRepo = new ViacaoHistoricoRepository($pdo);
         $this->upload        = new UploadService();
+        $this->cache         = new CacheService();
     }
 
+    //procura no repository em todas as linhas
     public function all(): array
     {
         return $this->repo->all();
     }
 
+    //encontra o id especifico
     public function find(int $id): array
     {
         return $this->repo->find($id);
     }
-//add na tabela
+
+    //cria a viacao e envia o arquivo da imagem se existir e valida atraves do ViacaoValidator os campos de input
     public function create(array $data, ?array $file = null): void
     {
-        if ($file) {
+        // Só faz upload se um arquivo foi enviado de fato
+        if ($file && $file['error'] === UPLOAD_ERR_OK) {
             $logo = $this->upload->upload($file);
             if ($logo) {
                 $data['logo'] = $logo;
@@ -61,8 +66,11 @@ final class ViacaoService
             $alteracao,
             'criado'
         );
+
+        $this->cache->forget('home_viacoes');
     }
-//edita as inf
+
+    //passa por validações para realizar a edição
     public function update(int $id, array $data, ?array $file = null): void
     {
         $viacaoAtual = $this->repo->find($id);
@@ -71,13 +79,15 @@ final class ViacaoService
             throw new \Exception('Viação não encontrada');
         }
 
-        if ($file) {
+        // Só faz upload se um arquivo foi enviado de fato
+        if ($file && $file['error'] === UPLOAD_ERR_OK) {
             $logo = $this->upload->upload($file);
             if ($logo) {
                 $data['logo'] = $logo;
             }
         }
 
+        // Mantém a logo atual se não enviou nova
         $data['logo'] = $data['logo'] ?? $viacaoAtual['logo'];
 
         ViacaoValidator::validate($data);
@@ -111,8 +121,11 @@ final class ViacaoService
             $alteracao,
             'editado'
         );
+
+        $this->cache->forget('home_viacoes');
     }
-//delete valida
+
+    //deleta atraves do id
     public function delete(int $id): void
     {
         $viacao = $this->repo->find($id);
@@ -140,21 +153,29 @@ final class ViacaoService
         );
 
         $this->repo->delete($id);
+
+        $this->cache->forget('home_viacoes');
     }
 
-//acessa o metodo no repository para verificar
+    //pega apenas as viacoes ativas para mostrar na home
+    public function allAtivas(): array
+    {
+        return $this->repo->allAtivas();
+    }
+
+    //mostra o historico das alteracoes
     public function historicoAll(): array
     {
         return $this->historicoRepo->all();
     }
 
-//acessa o filtro para verificar
+    //filtra a viacao
     public function filter(string $nome, string $cidade, string $status): array
     {
         return $this->repo->filter($nome, $cidade, $status);
     }
 
-//acessa o filtro de historico para verificar
+    //filtra o historico
     public function filterHistorico(string $acao, string $usuario, string $data): array
     {
         return $this->historicoRepo->filter($acao, $usuario, $data);

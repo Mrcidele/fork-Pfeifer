@@ -12,6 +12,10 @@ services:
       else
         composer dump-autoload --no-interaction --optimize;
       fi &&
+      until php -r \"new PDO('mysql:host=db;dbname=tasks', 'app', 'app123');\" 2>/dev/null; do
+        echo 'Aguardando banco...';
+        sleep 2;
+      done &&
       php src/database/migrations/migrate.php &&
       php src/database/seeds/seed.php &&
       apache2-foreground"

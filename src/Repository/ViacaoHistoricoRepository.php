@@ -13,7 +13,8 @@ final class ViacaoHistoricoRepository
     {
         $this->pdo = $pdo;
     }
-//prepara query para depois executar
+
+    //prepara query para depois executar
     public function create(
         int $viacaoId,
         int $usuarioId,

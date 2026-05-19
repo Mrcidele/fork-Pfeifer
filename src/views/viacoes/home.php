@@ -327,12 +327,15 @@
     </div>
 
     <div class="container-grid">
-
+        <?php foreach ($viacoes as $v): ?>
+            <?php if (empty($v['logo'])) continue; ?>
             <div class="item">
-                <img src="uploads/" width="80" height="100" style="border-radius: 5px">
+                <img src="/uploads/<?= htmlspecialchars($v['logo']) ?>" width="80" height="100" style="border-radius: 5px; object-fit: contain;">
                 <hr>
-                <p></p>
+                <p><?= htmlspecialchars($v['nome']) ?></p>
             </div>
+        <?php endforeach; ?>
+    </div>
 
     </div>
 
