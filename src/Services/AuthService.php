@@ -43,7 +43,7 @@ final class AuthService
             throw new \Exception('Senha incorreta.');
         }
 
-        if ($usuario['tipo'] !== 'usuario') {
+        if ($usuario['tipo'] !== 'admin') {
             throw new \Exception('Acesso restrito a administradores.');
         }
 
@@ -67,6 +67,6 @@ final class AuthService
 //aqui ele só permite logar de acordo com o tipo de usuario
     public static function admin(): bool
     {
-        return self::check() && $_SESSION['usuario_tipo'] === 'usuario';
+        return self::check() && $_SESSION['usuario_tipo'] === 'admin';
     }
 }

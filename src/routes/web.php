@@ -3,6 +3,7 @@
 declare(strict_types=1);
 use App\Controllers\ViacaoController;
 use App\Controllers\AuthController;
+use App\Controllers\UsuarioController;
 /** @var App\Core\Router $router */
 
 //rotas
@@ -19,3 +20,19 @@ $router->get('/viacoes/login', [ViacaoController::class, 'login']);
 $router->get('/login',  [AuthController::class, 'showLogin']);
 $router->post('/login', [AuthController::class, 'login']);
 $router->get('/logout', [AuthController::class, 'logout']);
+
+// Novas Rotas para Visualização Única e Restore de Viações
+$router->get('/viacoes/show', [ViacaoController::class, 'show']); // Passar ?id=
+$router->get('/viacoes/restore', [ViacaoController::class, 'restore']);
+
+// Rotas CRUD Usuários
+$router->get('/usuarios', [UsuarioController::class, 'index']);
+$router->get('/usuarios/create', [UsuarioController::class, 'create']);
+$router->post('/usuarios/store', [UsuarioController::class, 'store']);
+$router->get('/usuarios/edit', [UsuarioController::class, 'edit']);
+$router->post('/usuarios/update', [UsuarioController::class, 'update']);
+$router->get('/usuarios/show', [UsuarioController::class, 'show']);
+$router->get('/usuarios/delete', [UsuarioController::class, 'destroy']);
+$router->get('/usuarios/restore', [UsuarioController::class, 'restore']);
+
+$router->get('/usuarios/historico', [\App\Controllers\UsuarioController::class, 'historicoGeral']);

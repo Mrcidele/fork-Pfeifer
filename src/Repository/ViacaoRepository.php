@@ -115,12 +115,78 @@ final class ViacaoRepository
     }
 
     //prepara a query e executa para deleta a viação
-    public function delete(int $id): void
-    {
-        $stmt = $this->pdo->prepare(
-            "DELETE FROM viacoes WHERE id = ?"
-        );
-
+    public function delete(int $id): void {
+        $stmt = $this->pdo->prepare("UPDATE viacoes SET status = 1 WHERE id = ?");
         $stmt->execute([$id]);
+    }
+    public function restore(int $id): void {
+        $stmt = $this->pdo->prepare("UPDATE viacoes SET status = 0 WHERE id = ?");
+        $stmt->execute([$id]);
+    }
+
+    public function paginate(array $filtros, int $limit, int $offset): array {
+        $where = [];
+        $params = [];
+
+        // Filtro padrão de soft delete (exibe apenas ativos a menos que seja pedido os deletados)
+        $status = $filtros['status'] ?? '0';
+        if ($status !== 'todos') {
+            $where[] = "status = :status";
+            $params['status'] = $status;
+        }
+
+        if (!empty($filtros['nome'])) {
+            $where[] = "nome LIKE :nome";
+            $params['nome'] = "%{$filtros['nome']}%";
+        }
+
+        $sql = "SELECT * FROM viacoes";
+        if (count($where) > 0) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+
+        $sql .= " ORDER BY id DESC LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+
+        $stmt->execute();
+        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+    }
+
+    // Conta o total de registros para a paginação saber quantas páginas criar
+    public function countTotal(array $filtros): int {
+        $where = [];
+        $params = [];
+
+        $status = $filtros['status'] ?? '0';
+        if ($status !== 'todos') {
+            $where[] = "status = :status";
+            $params['status'] = $status;
+        }
+
+        if (!empty($filtros['nome'])) {
+            $where[] = "nome LIKE :nome";
+            $params['nome'] = "%{$filtros['nome']}%";
+        }
+
+        $sql = "SELECT COUNT(*) FROM viacoes";
+        if (count($where) > 0) {
+            $sql .= " WHERE " . implode(" AND ", $where);
+        }
+
+        $stmt = $this->pdo->prepare($sql);
+
+        foreach ($params as $key => $value) {
+            $stmt->bindValue(":$key", $value);
+        }
+
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
     }
 }

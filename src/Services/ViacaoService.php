@@ -3,13 +3,13 @@
 namespace App\Services;
 
 use App\Repository\ViacaoRepository;
-use App\Repository\ViacaoHistoricoRepository;
+use App\Repository\HistoricoRepository;
 use App\Validators\ViacaoValidator;
 
 final class ViacaoService
 {
     private ViacaoRepository $repo;
-    private ViacaoHistoricoRepository $historicoRepo;
+    private HistoricoRepository $historicoRepo;
     private UploadService $upload;
     private CacheService $cache;
 
@@ -17,27 +17,34 @@ final class ViacaoService
     {
         $pdo = getPdo();
         $this->repo          = new ViacaoRepository($pdo);
-        $this->historicoRepo = new ViacaoHistoricoRepository($pdo);
+        $this->historicoRepo = new HistoricoRepository($pdo);
         $this->upload        = new UploadService();
         $this->cache         = new CacheService();
     }
 
-    //procura no repository em todas as linhas
     public function all(): array
     {
         return $this->repo->all();
     }
 
-    //encontra o id especifico
     public function find(int $id): array
     {
         return $this->repo->find($id);
     }
 
-    //cria a viacao e envia o arquivo da imagem se existir e valida atraves do ViacaoValidator os campos de input
+    // Paginação envelopada no Service
+    public function paginate(array $filtros, int $limit, int $offset): array
+    {
+        return $this->repo->paginate($filtros, $limit, $offset);
+    }
+
+    public function countTotal(array $filtros): int
+    {
+        return $this->repo->countTotal($filtros);
+    }
+
     public function create(array $data, ?array $file = null): void
     {
-        // Só faz upload se um arquivo foi enviado de fato
         if ($file && $file['error'] === UPLOAD_ERR_OK) {
             $logo = $this->upload->upload($file);
             if ($logo) {
@@ -60,7 +67,9 @@ final class ViacaoService
             ],
         ], JSON_UNESCAPED_UNICODE);
 
+        // Ajustado para a tabela unificada
         $this->historicoRepo->create(
+            'viacoes',
             $id,
             $_SESSION['usuario_id'] ?? 1,
             $alteracao,
@@ -70,7 +79,6 @@ final class ViacaoService
         $this->cache->forget('home_viacoes');
     }
 
-    //passa por validações para realizar a edição
     public function update(int $id, array $data, ?array $file = null): void
     {
         $viacaoAtual = $this->repo->find($id);
@@ -79,7 +87,7 @@ final class ViacaoService
             throw new \Exception('Viação não encontrada');
         }
 
-        // Só faz upload se um arquivo foi enviado de fato
+        // Se houver upload de imagem
         if ($file && $file['error'] === UPLOAD_ERR_OK) {
             $logo = $this->upload->upload($file);
             if ($logo) {
@@ -87,11 +95,10 @@ final class ViacaoService
             }
         }
 
-        // Mantém a logo atual se não enviou nova
+        // Mantém a logo antiga se não enviou uma nova
         $data['logo'] = $data['logo'] ?? $viacaoAtual['logo'];
 
-        ViacaoValidator::validate($data);
-
+        //ANTES
         $antes = [
             'nome'   => $viacaoAtual['nome'],
             'url'    => $viacaoAtual['url'],
@@ -100,32 +107,36 @@ final class ViacaoService
             'logo'   => $viacaoAtual['logo'],
         ];
 
+        //DEPOIS
         $depois = [
             'nome'   => $data['nome'],
             'url'    => $data['url'],
             'cidade' => $data['cidade'],
-            'status' => $data['status'],
+            'status' => $data['status'] ?? $viacaoAtual['status'],
             'logo'   => $data['logo'],
         ];
 
+        // Converte para JSON
         $alteracao = json_encode([
             'antes'  => $antes,
             'depois' => $depois,
         ], JSON_UNESCAPED_UNICODE);
 
+        // 1. ATUALIZA A VIAÇÃO NO BANCO
         $this->repo->update($id, $data);
 
+        // 2. GRAVA O HISTÓRICO NA NOVA TABELA UNIFICADA
         $this->historicoRepo->create(
-            $id,
-            $_SESSION['usuario_id'] ?? 1,
-            $alteracao,
-            'editado'
+            'viacoes',                    // tabela
+            $id,                          // registro_id
+            $_SESSION['usuario_id'] ?? 1, // usuario_id
+            $alteracao,                   // texto do json
+            'editado'                     // acao
         );
 
         $this->cache->forget('home_viacoes');
     }
 
-    //deleta atraves do id
     public function delete(int $id): void
     {
         $viacao = $this->repo->find($id);
@@ -145,39 +156,63 @@ final class ViacaoService
             'depois' => null,
         ], JSON_UNESCAPED_UNICODE);
 
+        // Registra o histórico primeiro
         $this->historicoRepo->create(
+            'viacoes',
             $id,
             $_SESSION['usuario_id'] ?? 1,
             $alteracao,
             'excluido'
         );
 
+        // Agora executa o Soft Delete adaptado no repositório
         $this->repo->delete($id);
 
         $this->cache->forget('home_viacoes');
     }
 
-    //pega apenas as viacoes ativas para mostrar na home
+    public function restore(int $id): void
+    {
+        $viacao = $this->repo->find($id);
+        if (!$viacao) {
+            throw new \Exception('Viação não encontrada');
+        }
+
+        $this->repo->restore($id);
+
+        $this->historicoRepo->create(
+            'viacoes',
+            $id,
+            $_SESSION['usuario_id'] ?? 1,
+            'Registro restaurado para a listagem ativa',
+            'restaurado'
+        );
+
+        $this->cache->forget('home_viacoes');
+    }
+
+    public function findHistory(int $id): array
+    {
+        return $this->historicoRepo->findByRegistro('viacoes', $id);
+    }
+
     public function allAtivas(): array
     {
         return $this->repo->allAtivas();
     }
 
-    //mostra o historico das alteracoes
-    public function historicoAll(): array
+    public function allHistory(string $acao = '', string $usuario = '', string $data = ''): array
     {
-        return $this->historicoRepo->all();
+        return $this->historicoRepo->filter('viacoes', $acao, $usuario, $data);
+    }
+    public function paginateHistory(array $filtros, int $limit, int $offset): array
+    {
+
+        return $this->historicoRepo->paginate($filtros, $limit, $offset);
     }
 
-    //filtra a viacao
-    public function filter(string $nome, string $cidade, string $status): array
+    public function countTotalHistory(array $filtros): int
     {
-        return $this->repo->filter($nome, $cidade, $status);
-    }
-
-    //filtra o historico
-    public function filterHistorico(string $acao, string $usuario, string $data): array
-    {
-        return $this->historicoRepo->filter($acao, $usuario, $data);
+        return $this->historicoRepo->countTotal($filtros);
     }
 }
