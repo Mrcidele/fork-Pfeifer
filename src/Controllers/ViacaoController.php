@@ -14,7 +14,6 @@ final class ViacaoController
         $this->service = new ViacaoService();
     }
 
-//nova viacao (renderiza a tela com a rota)
     public function create(): void
     {
         View::render('viacoes/create', [
@@ -22,16 +21,10 @@ final class ViacaoController
         ]);
     }
 
-//renderiza a página principal e passa os dados para a home
     public function home(): void
     {
-        $cache   = new \App\Services\CacheService(ttl: 300);
-        $viacoes = $cache->get('home_viacoes');
-
-        if ($viacoes === null) {
-            $viacoes = $this->service->allAtivas();
-            $cache->set('home_viacoes', $viacoes);
-        }
+        // Buscamos as viações ativas DIRETAMENTE do banco de dados, sem usar o cache!
+        $viacoes = $this->service->allAtivas();
 
         View::render('viacoes/home', [
             'title'   => 'Quero Passagem',
@@ -40,7 +33,6 @@ final class ViacaoController
         ], false);
     }
 
-//renderiza a página de login
     public function login(): void
     {
         View::render('viacoes/login', [
@@ -49,13 +41,11 @@ final class ViacaoController
         ], false);
     }
 
-//salva as inf do regitro
     public function store(): void
     {
         $this->save();
     }
 
-//salva a edição
     public function update(): void
     {
         $this->save(true);
@@ -82,7 +72,6 @@ final class ViacaoController
         }
     }
 
-    //exclui por id
     public function destroy(): void
     {
         $id = (int) $_GET['id'];
@@ -91,48 +80,103 @@ final class ViacaoController
         exit;
     }
 
-    //edita por id
+    public function restore(): void
+    {
+        $id = (int) $_GET['id'];
+        $this->service->restore($id);
+        header('Location: /viacoes');
+        exit;
+    }
+
+    public function show(): void
+    {
+        $id = (int) $_GET['id'];
+        $viacao = $this->service->find($id);
+        $historico = $this->service->findHistory($id);
+
+        View::render('viacoes/show', [
+            'title'     => 'Detalhes da Viação',
+            'viacao'    => $viacao,
+            'historico' => $historico
+        ]);
+    }
+
     public function edit(): void
     {
         $id = (int) $_GET['id'];
         $viacao = $this->service->find($id);
-        View::render('viacoes/edit', [
-            'title'  => 'Editar Viação',
-            'viacao' => $viacao
+        $historico = $this->service->findHistory($id);
+
+        \App\Core\View::render('viacoes/edit', [
+            'title'     => 'Editar Viação',
+            'viacao'    => $viacao,
+            'historico' => $historico
         ]);
     }
 
+    // Listagem com Paginação e Filtros integrada
     public function index(): void
     {
         $nome   = trim($_GET['nome']   ?? '');
         $cidade = trim($_GET['cidade'] ?? '');
-        $status = $_GET['status'] ?? '';
+        $status = $_GET['status'] ?? '0';
+        if ($status === '') $status = '0';
 
-        $viacoes = ($nome || $cidade || $status !== '')
-            ? $this->service->filter($nome, $cidade, $status)
-            : $this->service->all();
+        $paginaAtual = (int)($_GET['pagina'] ?? 1);
+        if ($paginaAtual < 1) $paginaAtual = 1;
+        $limit = 5;
+        $offset = ($paginaAtual - 1) * $limit;
+
+        $filtros = compact('nome', 'cidade', 'status');
+
+        $viacoes = $this->service->paginate($filtros, $limit, $offset);
+        $totalRegistros = $this->service->countTotal($filtros);
+
+        $totalPaginas = $totalRegistros > 0 ? ceil($totalRegistros / $limit) : 1;
 
         View::render('viacoes/index', [
-            'title'   => 'Viações',
-            'viacoes' => $viacoes,
-            'filtros' => compact('nome', 'cidade', 'status'),
+            'title'          => 'Viações',
+            'viacoes'        => $viacoes,
+            'filtros'        => $filtros,
+            'paginaAtual'    => $paginaAtual,
+            'totalPaginas'   => (int)$totalPaginas, // Garante que seja um número
+            'totalRegistros' => $totalRegistros
         ]);
     }
 
     public function historico(): void
     {
-        $acao    = trim($_GET['acao']    ?? '');
+        $acao    = trim($_GET['acao'] ?? '');
         $usuario = trim($_GET['usuario'] ?? '');
-        $data    = trim($_GET['data']    ?? '');
+        $data    = trim($_GET['data'] ?? '');
 
-        $historico = ($acao || $usuario || $data)
-            ? $this->service->filterHistorico($acao, $usuario, $data)
-            : $this->service->historicoAll();
+        // Configuração da Paginação
+        $paginaAtual = (int)($_GET['pagina'] ?? 1);
+        if ($paginaAtual < 1) $paginaAtual = 1;
+        $limit = 10; // Quantos logs aparecerão por página
+        $offset = ($paginaAtual - 1) * $limit;
 
-        View::render('viacoes/historico', [
-            'title'     => 'Histórico de Viações',
-            'historico' => $historico,
-            'filtros'   => compact('acao', 'usuario', 'data'),
+        // Monta os filtros para passar pro Service/Repository
+        $filtros = [
+            'tabela'  => 'viacoes',
+            'acao'    => $acao,
+            'usuario' => $usuario,
+            'data'    => $data
+        ];
+
+        // Busca paginada e contagem total
+        $historico = $this->service->paginateHistory($filtros, $limit, $offset);
+        $totalRegistros = $this->service->countTotalHistory($filtros);
+
+        $totalPaginas = $totalRegistros > 0 ? ceil($totalRegistros / $limit) : 1;
+
+        \App\Core\View::render('viacoes/historico', [
+            'title'          => 'Histórico Geral de Viações',
+            'historico'      => $historico,
+            'filtros'        => $filtros,
+            'paginaAtual'    => $paginaAtual,
+            'totalPaginas'   => (int)$totalPaginas,
+            'totalRegistros' => $totalRegistros
         ]);
     }
 }
