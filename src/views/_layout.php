@@ -13,6 +13,7 @@ $flash = View::pullFlash();?>
 <header>
     <nav>
         <a href="/viacoes">Viações</a>
+        <a href="/usuarios">Usuários</a>
     </nav>
 </header>
 <?php endif; ?>

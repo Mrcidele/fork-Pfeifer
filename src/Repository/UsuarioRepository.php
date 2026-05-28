@@ -47,16 +47,16 @@ final class UsuarioRepository
     public function create(array $data): int
     {
         $stmt = $this->pdo->prepare("
-            INSERT INTO usuarios (nome, email, senha, tipo, status)
-            VALUES (?, ?, ?, ?, ?)
-        ");
+        INSERT INTO usuarios (nome, email, senha, tipo, status)
+        VALUES (?, ?, ?, ?, ?)
+    ");
 
         $stmt->execute([
             $data['nome'],
             $data['email'],
             $data['senha'],
-            $data['tipo'] ?? 'usuario',
-            $data['status'] ?? 0
+            $data['tipo'] ?? 'usuario', // Valor padrão 'usuario'
+            $data['status'] ?? 0        // Valor padrão 0
         ]);
 
         return (int)$this->pdo->lastInsertId();
@@ -65,25 +65,41 @@ final class UsuarioRepository
     // prepara a query e executa para edita o usuario
     public function update(int $id, array $data): void
     {
-        // Neste update padrão, não incluí a senha para evitar sobrescrevê-la acidentalmente
-        $stmt = $this->pdo->prepare("
-            UPDATE usuarios SET
-                nome = ?,
-                email = ?,
-                tipo = ?,
-                status = ?
-            WHERE id = ?
-        ");
+        $fields = [];
+        $params = [];
 
-        $stmt->execute([
-            $data['nome'],
-            $data['email'],
-            $data['tipo'],
-            $data['status'],
-            $id
-        ]);
+        // Check which fields were actually passed and build the query dynamically
+        if (isset($data['nome'])) {
+            $fields[] = "nome = ?";
+            $params[] = $data['nome'];
+        }
+
+        if (isset($data['email'])) {
+            $fields[] = "email = ?";
+            $params[] = $data['email'];
+        }
+
+        if (isset($data['tipo'])) {
+            $fields[] = "tipo = ?";
+            $params[] = $data['tipo'];
+        }
+
+        if (isset($data['status'])) {
+            $fields[] = "status = ?";
+            $params[] = $data['status'];
+        }
+
+        if (empty($fields)) {
+            return;
+        }
+
+        $params[] = $id;
+
+        $sql = "UPDATE usuarios SET " . implode(', ', $fields) . " WHERE id = ?";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
     }
-
     // Soft Delete
     public function delete(int $id): void
     {

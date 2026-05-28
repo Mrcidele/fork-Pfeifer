@@ -139,24 +139,25 @@ final class ViacaoService
 
     public function delete(int $id): void
     {
-        $viacao = $this->repo->find($id);
+        $antes = $this->repo->find($id);
 
-        if (!$viacao) {
+        if (!$antes) {
             throw new \Exception('Viação não encontrada');
         }
 
+        // 1. Executa o Soft Delete adaptado no repositório
+        $this->repo->delete($id);
+
+        // 2. Busca o estado atualizado (agora com status = 1)
+        $depois = $this->repo->find($id);
+
+        // 3. Monta o JSON padrão para a View ler perfeitamente
         $alteracao = json_encode([
-            'antes'  => [
-                'nome'   => $viacao['nome'],
-                'url'    => $viacao['url'],
-                'cidade' => $viacao['cidade'],
-                'status' => $viacao['status'],
-                'logo'   => $viacao['logo'],
-            ],
-            'depois' => null,
+            'antes'  => $antes,
+            'depois' => $depois,
         ], JSON_UNESCAPED_UNICODE);
 
-        // Registra o histórico primeiro
+        // 4. Registra no histórico
         $this->historicoRepo->create(
             'viacoes',
             $id,
@@ -165,32 +166,39 @@ final class ViacaoService
             'excluido'
         );
 
-        // Agora executa o Soft Delete adaptado no repositório
-        $this->repo->delete($id);
-
         $this->cache->forget('home_viacoes');
     }
-
     public function restore(int $id): void
     {
-        $viacao = $this->repo->find($id);
-        if (!$viacao) {
+        $antes = $this->repo->find($id);
+
+        if (!$antes) {
             throw new \Exception('Viação não encontrada');
         }
 
+        // 1. Restaura o registro (status = 0)
         $this->repo->restore($id);
 
+        // 2. Busca o estado atualizado
+        $depois = $this->repo->find($id);
+
+        // 3. Monta o JSON padrão para manter a consistência visual
+        $alteracao = json_encode([
+            'antes'  => $antes,
+            'depois' => $depois,
+        ], JSON_UNESCAPED_UNICODE);
+
+        // 4. Salva no histórico
         $this->historicoRepo->create(
             'viacoes',
             $id,
             $_SESSION['usuario_id'] ?? 1,
-            'Registro restaurado para a listagem ativa',
+            $alteracao,
             'restaurado'
         );
 
         $this->cache->forget('home_viacoes');
     }
-
     public function findHistory(int $id): array
     {
         return $this->historicoRepo->findByRegistro('viacoes', $id);
