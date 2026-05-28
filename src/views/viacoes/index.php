@@ -70,7 +70,7 @@
 <?php if (($totalPaginas ?? 1) > 1): ?>
     <div style="text-align: center; margin-top: 20px;">
         <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
-            <a href="?pagina=<?= $i ?>&nome=<?= urlencode($filtros['nome'] ?? '') ?>&status=<?= urlencode($filtros['status'] ?? '0') ?>"
+            <a href="?pagina=<?= $i ?>&nome=<?= urlencode($filtros['nome'] ?? '') ?>&cidade=<?= urlencode($filtros['cidade'] ?? '') ?>&status=<?= urlencode($filtros['status'] ?? '0') ?>"
                class="btn <?= $i === $paginaAtual ? 'btn-primary' : 'btn-secondary' ?>"><?= $i ?></a>
         <?php endfor; ?>
     </div>

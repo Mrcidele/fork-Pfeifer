@@ -75,4 +75,12 @@
         <?php endif; ?>
         </tbody>
     </table>
+    <?php if (($totalPaginas ?? 1) > 1): ?>
+    <div style="text-align: center; margin-top: 20px;">
+        <?php for ($i = 1; $i <= $totalPaginas; $i++): ?>
+            <a href="?pagina=<?= $i ?>&acao=<?= urlencode($filtros['acao'] ?? '') ?>&usuario=<?= urlencode($filtros['usuario'] ?? '') ?>&data=<?= urlencode($filtros['data'] ?? '') ?>"
+               class="btn <?= $i === $paginaAtual ? 'btn-primary' : 'btn-secondary' ?>"><?= $i ?></a>
+        <?php endfor; ?>
+    </div>
+    <?php endif; ?>
 </div>
