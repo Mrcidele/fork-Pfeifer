@@ -16,7 +16,7 @@
 
         <select name="status" class="filter-input">
             <option value="0" <?= ($filtros['status'] ?? '0') === '0' ? 'selected' : '' ?>>Ativo</option>
-            <option value="1" <?= ($filtros['status'] ?? '0') === '1' ? 'selected' : '' ?>>Inativo</option>
+            <option value="1" <?= ($filtros['status'] ?? '0') === '1' ? 'selected' : '' ?>>Deletado</option>
         </select>
 
         <button type="submit" class="btn btn-primary">Filtrar</button>
@@ -51,7 +51,7 @@
                         <a href="/usuarios/edit?id=<?= $u['id'] ?>" class="btn btn-primary">Editar</a>
                         <?php if ($u['status'] == '0'): ?>
                             <a href="/usuarios/delete?id=<?= $u['id'] ?>" class="btn btn-danger"
-                               onclick="return confirm('Deseja desativar este usuário?')">Desativar</a>
+                               onclick="return confirm('Deseja deletar este usuário?')">Deletar</a>
                         <?php else: ?>
                             <a href="/usuarios/restore?id=<?= $u['id'] ?>" class="btn btn-success">Restaurar</a>
                         <?php endif; ?>

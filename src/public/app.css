@@ -314,19 +314,30 @@ tr:hover td {
   font-size: 12px;
   border-collapse: collapse;
   width: 100%;
+  max-width: 45vw;
+  margin: 0;
+  table-layout: fixed;
 }
+
+.diff-table th:nth-child(1) { width: 25%; }
+.diff-table th:nth-child(2) { width: 37.5%; }
+.diff-table th:nth-child(3) { width: 37.5%; }
 
 .diff-table th {
   background: #f0f4f8;
   padding: 4px 8px;
-  text-align: left;
+  text-align: center;
   font-size: 11px;
   color: #4a4a4a;
 }
 
 .diff-table td {
   padding: 4px 8px;
+  text-align: center;
+  vertical-align: middle;
   border-bottom: 1px solid #e5e7eb;
+  word-wrap: break-word;
+  word-break: break-all;
 }
 
 .diff-antes {
